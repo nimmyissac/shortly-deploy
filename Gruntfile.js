@@ -3,7 +3,16 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['public/**/*.js'],
+        dest: 'public/dist/built.js',
+      },
     },
+
+    clean: ['public/dist'],
 
     mochaTest: {
       test: {
@@ -21,6 +30,11 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      target: {
+        files: {
+          'public/dist/built.min.js': ['public/dist/built.js']
+        }
+      }
     },
 
     eslint: {
@@ -30,6 +44,10 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      target: {
+        src: 'public/*.css',
+        dest: 'public/dist/style.min.css'
+      }
     },
 
     watch: {
@@ -59,6 +77,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
@@ -89,6 +108,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'clean',
+    'concat',
+    'uglify',
+    'cssmin'
   ]);
 
 
