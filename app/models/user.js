@@ -11,7 +11,7 @@ var UserSchema = mongoose.Schema({
 
 var User = mongoose.model('User', UserSchema);
 
-User.prototype.comparePassword = function(attemptedPassword, callback) {
+User.comparePassword = function(attemptedPassword, callback) {
   bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
     if (err) {
       return callback(err);
@@ -20,11 +20,8 @@ User.prototype.comparePassword = function(attemptedPassword, callback) {
   });
 };
 
-console.log('^^^^^^^^^^^^^^^^^^^^^^^');
-
 UserSchema.pre('save', function(next) {
   var cipher = Promise.promisify(bcrypt.hash);
-  console.log('#######################################');
   return cipher(this.password, null, null).bind(this)
     .then(function(hash) {
       this.password = hash;
